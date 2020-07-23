@@ -21,6 +21,30 @@ export default class Board extends React.Component {
       complete: React.createRef(),
     }
   }
+
+  componentDidMount(){
+    this.dragula = Dragula([
+      this.swimlanes.backlog.current,
+      this.swimlanes.inProgress.current,
+      this.swimlanes.complete.current
+    ])
+
+    this.dragula.on('drop', (element, target, source, sibling) => {
+      if (target.id === 'Backlog') {
+        element.className = 'Card Card-grey';
+        element.setAttribute("data-status", "Backlog");
+      }
+      else if (target.id === 'In Progress') {
+        element.className = 'Card Card-blue';
+        element.setAttribute("data-status", "in Progress");
+      }
+      else if (target.id === 'Complete') {
+        element.className = 'Card Card-green';
+        element.setAttribute("data-status", "Complete");
+      }
+    })
+  }
+
   getClients() {
     return [
       ['1','Stark, White and Abbott','Cloned Optimal Architecture', 'in-progress'],
@@ -50,6 +74,7 @@ export default class Board extends React.Component {
       status: companyDetails[3],
     }));
   }
+
   renderSwimlane(name, clients, ref) {
     return (
       <Swimlane name={name} clients={clients} dragulaRef={ref}/>
